@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_12/SecondScreen.dart';
+
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -10,33 +10,25 @@ class Homescreen extends StatefulWidget {
 
 class _HomescreenState extends State<Homescreen> {
 
-  void getDate() {
-    Future.delayed(Duration(seconds: 5),(){
-      print("Hello (after five second method called - 05)");
-    });
-
-
-    Future.delayed(Duration(seconds: 2),(){
-      print("Hello (after two second method called  - 02)");
-    });
-
-
-    print("world (normal getdate method print)");
-  }
+  String fullname='';
 
   // await 
-  void getDateawait() async {
-    await Future.delayed(Duration(seconds: 5),(){
-      print("Hello (after five second method called - 05)");
+  void getDate() async {
+    String firstname = await Future.delayed(Duration(seconds: 5),(){
+      return"Sandun";
     });
 
 
-    await Future.delayed(Duration(seconds: 2),(){
-      print("Hello (after two second method called  - 02)");
+    String Lastname = await Future.delayed(Duration(seconds: 2),(){
+      return "Sampath";
     });
 
 
-    print("world (normal getdate method print)");
+    print("$firstname $Lastname");
+
+    setState(() {
+      fullname = "$firstname $Lastname";
+    });
   }
 
   @override
@@ -45,14 +37,17 @@ class _HomescreenState extends State<Homescreen> {
     // TODO: implement initState
     super.initState();
     getDate();
-    getDateawait();
+    
   }
 
   @override
   Widget build(BuildContext context) {
     print("build");
     return Scaffold(
-      
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(child: Text("$fullname" ,style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),)),
+      ),
     );
   }
 }
