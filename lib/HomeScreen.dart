@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 
 class Homescreen extends StatefulWidget {
@@ -10,25 +12,24 @@ class Homescreen extends StatefulWidget {
 
 class _HomescreenState extends State<Homescreen> {
 
-  String fullname='';
-
-  // await 
+  
+  int age = 0;
+  bool isloading = false;
+  final TextEditingController name = TextEditingController();
+   
   void getDate() async {
-    String firstname = await Future.delayed(Duration(seconds: 5),(){
-      return"Sandun";
-    });
+    var url = Uri.parse('https://api.agify.io/?name=${name.text}');
+    Response rs = await get(url);
+    //print(rs.body);  (import {API} eken gtta deta tika pennna meka use krnn)
 
-
-    String Lastname = await Future.delayed(Duration(seconds: 2),(){
-      return "Sampath";
-    });
-
-
-    print("$firstname $Lastname");
-
+    Map urs = jsonDecode(rs.body);
+    
     setState(() {
-      fullname = "$firstname $Lastname";
+      isloading = false;
+      age = urs['age'];
     });
+
+    
   }
 
   @override
@@ -36,7 +37,7 @@ class _HomescreenState extends State<Homescreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDate();
+    
     
   }
 
@@ -44,9 +45,38 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     print("build");
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          isloading = true;
+          getDate();
+        },
+        child: Icon(Icons.api),
+        ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(child: Text("$fullname" ,style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),)),
+        child: Center(child: 
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+          
+              TextField(
+                controller: name,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "enter your name"
+                ),
+              ),
+              SizedBox(height: 30.0),
+          
+              if(isloading)
+              Text('loading',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold))
+              else
+              Text("$age" ,style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+            ],
+          ),
+        )),
       ),
     );
   }
